@@ -648,7 +648,7 @@
 
     document.getElementById('sName').textContent = document.getElementById('name').value;
     document.getElementById('sBody').innerHTML = tbody;
-    fetch("PASTE_YOUR_WEB_APP_URL_HERE", {
+    fetch("https://script.google.com/macros/s/AKfycbzC1Mc8nyxz3-N2OpqgJkWgt_jEnSt9H9IV-StMgUtuOzc3cnQOYTyAz9PpBU4g9hCy3w/exec", {
   method: "POST",
   body: JSON.stringify({
     name: document.getElementById("name").value,
