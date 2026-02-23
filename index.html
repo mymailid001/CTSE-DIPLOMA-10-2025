@@ -6,129 +6,89 @@
 <title>JTO Results Collection — JTO 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --primary: #1a3c6e; --accent: #c8102e; --gold: #f0a500;
-    --light: #f4f7fc; --border: #d0dcea; --text: #1a2b45;
-    --muted: #5a7090; --green: #1a7a4a; --white: #ffffff; --radius: 10px;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Nunito', sans-serif; background: #edf2f9; min-height: 100vh; padding: 0 0 60px; color: var(--text); }
-
-  .top-banner { background: linear-gradient(135deg,var(--primary) 0%,#0d2448 100%); padding: 32px 20px 28px; text-align: center; position: relative; overflow: hidden; }
-  .top-banner::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(45deg,rgba(255,255,255,.02) 0px,rgba(255,255,255,.02) 1px,transparent 1px,transparent 20px); }
-  .emblem { width:58px;height:58px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px;box-shadow:0 4px 18px rgba(240,165,0,.4);position:relative;z-index:1; }
-  .top-banner h1 { font-family:'Playfair Display',serif;font-size:clamp(20px,4vw,28px);color:#fff;position:relative;z-index:1; }
-  .top-banner .sub { color:var(--gold);font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:6px;position:relative;z-index:1; }
-  .top-banner .note { color:rgba(255,255,255,.45);font-size:12px;margin-top:8px;position:relative;z-index:1; }
-
-  .wrapper { max-width:780px;margin:-10px auto 0;padding:0 16px; }
-  .progress-bar { height:4px;background:var(--border);border-radius:2px;margin-bottom:24px;overflow:hidden; }
-  .progress-fill { height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:2px;transition:width .4s;width:0%; }
-
-  .card { background:var(--white);border-radius:16px;box-shadow:0 8px 32px rgba(26,60,110,.10);margin-bottom:16px;overflow:hidden;animation:fadeUp .5s ease both; }
-  .card:nth-child(3){ animation-delay:.08s; }
-  .card:nth-child(4){ animation-delay:.16s; }
-
-  .card-header { background:var(--primary);color:#fff;padding:12px 22px;font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:10px; }
-  .card-header .num { width:22px;height:22px;background:var(--gold);color:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0; }
-  .count-badge { margin-left:auto;background:var(--accent);color:#fff;font-size:11px;font-weight:800;padding:2px 10px;border-radius:20px;display:none; }
-  .count-badge.show { display:inline-block; }
-
-  .card-body { padding:22px 24px; }
-  @media(max-width:480px){ .card-body{ padding:16px; } }
-
-  .g2 { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
-  .g3 { display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px; }
-  @media(max-width:580px){ .g2,.g3{ grid-template-columns:1fr; } }
-
-  .field { display:flex;flex-direction:column;gap:5px; }
-  .field label { font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.8px;text-transform:uppercase; }
-  .req { color:var(--accent);margin-left:2px; }
-  .field input, .field select { height:42px;border:1.5px solid var(--border);border-radius:var(--radius);padding:0 13px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;color:var(--text);background:var(--light);outline:none;width:100%;transition:border-color .2s,box-shadow .2s,background .2s; }
-  .field input:focus, .field select:focus { border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(26,60,110,.1); }
-  .field input.err, .field select.err { border-color:var(--accent);box-shadow:0 0 0 3px rgba(200,16,46,.1); }
-  .errmsg { font-size:11px;color:var(--accent);font-weight:700;display:none; }
-  .field input.err ~ .errmsg, .field select.err ~ .errmsg { display:block; }
-
-  .divider { height:1px;background:var(--border);margin:20px 0; }
-
-  .subjects-list { display:flex;flex-direction:column;gap:14px; }
-
-  .subject-row { position:relative;background:var(--light);border:1.5px solid var(--border);border-radius:12px;padding:18px 14px 14px;animation:slideIn .22s ease both;transition:border-color .2s,box-shadow .2s; }
-  .subject-row:hover { border-color:#b0c8e8;box-shadow:0 3px 14px rgba(26,60,110,.08); }
-
-  .row-badge { position:absolute;top:-11px;left:14px;background:var(--primary);color:#fff;font-size:10px;font-weight:800;padding:2px 10px;border-radius:20px;letter-spacing:.5px; }
-
-  .row-grid { display:grid;grid-template-columns:2fr 110px 110px 38px;gap:12px;align-items:start; }
-  @media(max-width:580px){ .row-grid{ grid-template-columns:1fr; } }
-
-  /* Post info card shown after subject selection */
-  .post-info {
-    display: none;
-    margin-top: 10px;
-    background: #fff;
-    border: 1.5px solid #b8d4f0;
-    border-radius: 10px;
-    padding: 10px 14px;
-    animation: slideIn .2s ease both;
-  }
-  .post-info.show { display: block; }
-  .post-info-title {
-    font-size: 10px; font-weight: 800; color: var(--primary);
-    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 7px;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .post-info-title::before { content:'📋'; font-size:12px; }
-  .post-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-  .post-tag {
-    background: #e8f0fb;
-    border: 1px solid #b8d0f0;
-    border-radius: 6px;
-    padding: 4px 10px;
-    font-size: 11px; font-weight: 700; color: var(--primary);
-    line-height: 1.4;
-  }
-  .post-tag .post-code { color: var(--accent); font-weight: 800; }
-  .post-tag .post-name { display: block; font-size: 10px; color: var(--muted); font-weight: 600; margin-top: 1px; }
-
-  .btn-del { width:38px;height:38px;border-radius:8px;border:1.5px solid #f0c0c0;background:#fff5f5;color:var(--accent);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s;flex-shrink:0; }
-  .btn-del:hover { background:var(--accent);color:#fff;border-color:var(--accent); }
-
-  .btn-add { width:100%;height:46px;margin-top:14px;border:2px dashed var(--border);border-radius:12px;background:transparent;color:var(--primary);font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:border-color .2s,background .2s; }
-  .btn-add:hover { border-color:var(--primary);background:#eaf1fb; }
-  .btn-add .plus { width:22px;height:22px;border-radius:50%;background:var(--primary);color:#fff;font-size:17px;font-weight:900;display:flex;align-items:center;justify-content:center;line-height:1; }
-
-  .hint-box { display:flex;align-items:flex-start;gap:10px;font-size:12px;font-weight:600;color:var(--green);padding:10px 14px;background:#edfaf3;border-radius:8px;border:1.5px solid #b6e8cc;margin-bottom:16px;line-height:1.55; }
-  .hint-box .icon { font-size:16px;flex-shrink:0;margin-top:1px; }
-
-  .form-error { color:var(--accent);font-size:12px;font-weight:700;margin-top:10px;display:none; }
-
-  .btn-submit { width:100%;height:52px;background:linear-gradient(135deg,#0d2448,var(--primary));color:#fff;border:none;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;cursor:pointer;box-shadow:0 6px 24px rgba(26,60,110,.3);display:flex;align-items:center;justify-content:center;gap:10px;transition:opacity .2s,transform .15s,box-shadow .2s; }
-  .btn-submit:hover { opacity:.92;transform:translateY(-2px);box-shadow:0 10px 30px rgba(26,60,110,.38); }
-  .btn-submit:active { transform:translateY(0); }
-
-  .req-note { text-align:center;font-size:12px;color:var(--muted);margin-bottom:18px;font-weight:600; }
-  .req-note span { color:var(--accent); }
-
-  .overlay { display:none;position:fixed;inset:0;background:rgba(10,25,55,.82);z-index:999;align-items:center;justify-content:center;backdrop-filter:blur(4px); }
-  .overlay.show { display:flex;animation:fadeIn .3s ease; }
-  .success-box { background:#fff;border-radius:20px;padding:36px 32px;text-align:center;max-width:520px;width:94%;box-shadow:0 30px 80px rgba(0,0,0,.28);animation:popIn .4s cubic-bezier(.34,1.56,.64,1) both;max-height:90vh;overflow-y:auto; }
-  .success-icon { width:66px;height:66px;border-radius:50%;background:#e6f7ee;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 14px; }
-  .success-box h2 { font-family:'Playfair Display',serif;color:var(--primary);font-size:22px;margin-bottom:6px; }
-  .success-box p { color:var(--muted);font-size:13px;line-height:1.7;font-weight:600; }
-  .success-table { width:100%;margin-top:16px;border-collapse:collapse;font-size:11px;text-align:left; }
-  .success-table th { background:var(--primary);color:#fff;padding:7px 10px;font-weight:800;font-size:10px;letter-spacing:.8px;text-transform:uppercase; }
-  .success-table th:first-child { border-radius:8px 0 0 0; }
-  .success-table th:last-child  { border-radius:0 8px 0 0; }
-  .success-table td { padding:7px 10px;border-bottom:1px solid var(--border);font-weight:600;color:var(--text);vertical-align:top; }
-  .success-table tr:nth-child(even) td { background:var(--light); }
-  .btn-again { margin-top:20px;padding:11px 32px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:background .2s; }
-  .btn-again:hover { background:var(--accent); }
-
-  @keyframes fadeUp  { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)} }
-  @keyframes slideIn { from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)} }
-  @keyframes fadeIn  { from{opacity:0}to{opacity:1} }
-  @keyframes popIn   { from{opacity:0;transform:scale(.84)}to{opacity:1;transform:scale(1)} }
+  :root{--primary:#1a3c6e;--accent:#c8102e;--gold:#f0a500;--light:#f4f7fc;--border:#d0dcea;--text:#1a2b45;--muted:#5a7090;--green:#1a7a4a;--white:#fff;--radius:10px}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:#edf2f9;min-height:100vh;padding:0 0 60px;color:var(--text)}
+  .top-banner{background:linear-gradient(135deg,var(--primary) 0%,#0d2448 100%);padding:32px 20px 28px;text-align:center;position:relative;overflow:hidden}
+  .top-banner::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.02) 0px,rgba(255,255,255,.02) 1px,transparent 1px,transparent 20px)}
+  .emblem{width:58px;height:58px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px;box-shadow:0 4px 18px rgba(240,165,0,.4);position:relative;z-index:1}
+  .top-banner h1{font-family:'Playfair Display',serif;font-size:clamp(20px,4vw,28px);color:#fff;position:relative;z-index:1}
+  .top-banner .sub{color:var(--gold);font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:6px;position:relative;z-index:1}
+  .top-banner .note{color:rgba(255,255,255,.45);font-size:12px;margin-top:8px;position:relative;z-index:1}
+  .wrapper{max-width:780px;margin:-10px auto 0;padding:0 16px}
+  .progress-bar{height:4px;background:var(--border);border-radius:2px;margin-bottom:24px;overflow:hidden}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:2px;transition:width .4s;width:0%}
+  .card{background:var(--white);border-radius:16px;box-shadow:0 8px 32px rgba(26,60,110,.10);margin-bottom:16px;overflow:hidden;animation:fadeUp .5s ease both}
+  .card:nth-child(3){animation-delay:.08s}
+  .card:nth-child(4){animation-delay:.16s}
+  .card-header{background:var(--primary);color:#fff;padding:12px 22px;font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+  .card-header .num{width:22px;height:22px;background:var(--gold);color:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+  .count-badge{margin-left:auto;background:var(--accent);color:#fff;font-size:11px;font-weight:800;padding:2px 10px;border-radius:20px;display:none}
+  .count-badge.show{display:inline-block}
+  .card-body{padding:22px 24px}
+  @media(max-width:480px){.card-body{padding:16px}}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+  @media(max-width:580px){.g2,.g3{grid-template-columns:1fr}}
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field label{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.8px;text-transform:uppercase}
+  .req{color:var(--accent);margin-left:2px}
+  .field input,.field select{height:42px;border:1.5px solid var(--border);border-radius:var(--radius);padding:0 13px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;color:var(--text);background:var(--light);outline:none;width:100%;transition:border-color .2s,box-shadow .2s,background .2s}
+  .field input:focus,.field select:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(26,60,110,.1)}
+  .field input.err,.field select.err{border-color:var(--accent);box-shadow:0 0 0 3px rgba(200,16,46,.1)}
+  .errmsg{font-size:11px;color:var(--accent);font-weight:700;display:none}
+  .field input.err~.errmsg,.field select.err~.errmsg{display:block}
+  .divider{height:1px;background:var(--border);margin:20px 0}
+  .subjects-list{display:flex;flex-direction:column;gap:14px}
+  .subject-row{position:relative;background:var(--light);border:1.5px solid var(--border);border-radius:12px;padding:18px 14px 14px;animation:slideIn .22s ease both;transition:border-color .2s,box-shadow .2s,transform .15s;cursor:grab}
+  .subject-row:hover{border-color:#b0c8e8;box-shadow:0 3px 14px rgba(26,60,110,.08)}
+  .subject-row.dragging{opacity:0.4;cursor:grabbing;transform:scale(1.02)}
+  .subject-row.drag-over{border-color:var(--primary);border-style:dashed;background:#e8f0fb}
+  .row-badge{position:absolute;top:-11px;left:14px;background:var(--primary);color:#fff;font-size:10px;font-weight:800;padding:2px 10px;border-radius:20px;letter-spacing:.5px;display:flex;align-items:center;gap:6px}
+  .row-badge::before{content:'☰';font-size:12px;opacity:0.7}
+  .row-grid{display:grid;grid-template-columns:2fr 110px 110px 38px;gap:12px;align-items:start}
+  @media(max-width:580px){.row-grid{grid-template-columns:1fr}}
+  .post-info{display:none;margin-top:10px;background:#fff;border:1.5px solid #b8d4f0;border-radius:10px;padding:10px 14px;animation:slideIn .2s ease both}
+  .post-info.show{display:block}
+  .post-info-title{font-size:10px;font-weight:800;color:var(--primary);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:6px}
+  .post-info-title::before{content:'📋';font-size:12px}
+  .post-tags{display:flex;flex-wrap:wrap;gap:6px}
+  .post-tag{background:#e8f0fb;border:1px solid #b8d0f0;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--primary);line-height:1.4}
+  .post-tag .post-code{color:var(--accent);font-weight:800}
+  .post-tag .post-name{display:block;font-size:10px;color:var(--muted);font-weight:600;margin-top:1px}
+  .btn-del{width:38px;height:38px;border-radius:8px;border:1.5px solid #f0c0c0;background:#fff5f5;color:var(--accent);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s;flex-shrink:0}
+  .btn-del:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn-add{width:100%;height:46px;margin-top:14px;border:2px dashed var(--border);border-radius:12px;background:transparent;color:var(--primary);font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:border-color .2s,background .2s}
+  .btn-add:hover{border-color:var(--primary);background:#eaf1fb}
+  .btn-add .plus{width:22px;height:22px;border-radius:50%;background:var(--primary);color:#fff;font-size:17px;font-weight:900;display:flex;align-items:center;justify-content:center;line-height:1}
+  .hint-box{display:flex;align-items:flex-start;gap:10px;font-size:12px;font-weight:600;color:var(--green);padding:10px 14px;background:#edfaf3;border-radius:8px;border:1.5px solid #b6e8cc;margin-bottom:16px;line-height:1.55}
+  .hint-box .icon{font-size:16px;flex-shrink:0;margin-top:1px}
+  .pref-note{display:flex;align-items:flex-start;gap:10px;font-size:12px;font-weight:600;color:#1565c0;padding:10px 14px;background:#e3f2fd;border-radius:8px;border:1.5px solid #90caf9;margin-bottom:16px;line-height:1.55}
+  .pref-note .icon{font-size:16px;flex-shrink:0;margin-top:1px}
+  .form-error{color:var(--accent);font-size:12px;font-weight:700;margin-top:10px;display:none}
+  .btn-submit{width:100%;height:52px;background:linear-gradient(135deg,#0d2448,var(--primary));color:#fff;border:none;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;cursor:pointer;box-shadow:0 6px 24px rgba(26,60,110,.3);display:flex;align-items:center;justify-content:center;gap:10px;transition:opacity .2s,transform .15s,box-shadow .2s}
+  .btn-submit:hover{opacity:.92;transform:translateY(-2px);box-shadow:0 10px 30px rgba(26,60,110,.38)}
+  .btn-submit:active{transform:translateY(0)}
+  .req-note{text-align:center;font-size:12px;color:var(--muted);margin-bottom:18px;font-weight:600}
+  .req-note span{color:var(--accent)}
+  .overlay{display:none;position:fixed;inset:0;background:rgba(10,25,55,.82);z-index:999;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+  .overlay.show{display:flex;animation:fadeIn .3s ease}
+  .success-box{background:#fff;border-radius:20px;padding:36px 32px;text-align:center;max-width:520px;width:94%;box-shadow:0 30px 80px rgba(0,0,0,.28);animation:popIn .4s cubic-bezier(.34,1.56,.64,1) both;max-height:90vh;overflow-y:auto}
+  .success-icon{width:66px;height:66px;border-radius:50%;background:#e6f7ee;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 14px}
+  .success-box h2{font-family:'Playfair Display',serif;color:var(--primary);font-size:22px;margin-bottom:6px}
+  .success-box p{color:var(--muted);font-size:13px;line-height:1.7;font-weight:600}
+  .success-table{width:100%;margin-top:16px;border-collapse:collapse;font-size:11px;text-align:left}
+  .success-table th{background:var(--primary);color:#fff;padding:7px 10px;font-weight:800;font-size:10px;letter-spacing:.8px;text-transform:uppercase}
+  .success-table th:first-child{border-radius:8px 0 0 0}
+  .success-table th:last-child{border-radius:0 8px 0 0}
+  .success-table td{padding:7px 10px;border-bottom:1px solid var(--border);font-weight:600;color:var(--text);vertical-align:top}
+  .success-table tr:nth-child(even) td{background:var(--light)}
+  .btn-again{margin-top:20px;padding:11px 32px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:background .2s}
+  .btn-again:hover{background:var(--accent)}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes slideIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes popIn{from{opacity:0;transform:scale(.84)}to{opacity:1;transform:scale(1)}}
 </style>
 </head>
 <body>
@@ -145,7 +105,7 @@
   <div class="req-note">Fields marked <span>*</span> are required</div>
   <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
 
-  <!-- Card 1: Personal Details -->
+  <!-- Card 1 -->
   <div class="card">
     <div class="card-header"><div class="num">1</div>Personal Details</div>
     <div class="card-body">
@@ -164,6 +124,10 @@
       <div class="divider"></div>
       <div class="g3">
         <div class="field">
+          <label>Phone Number</label>
+          <input type="tel" id="phone" placeholder="10-digit mobile number" maxlength="10"/>
+        </div>
+        <div class="field">
           <label>Communal Category <span class="req">*</span></label>
           <select id="category">
             <option value="">Choose</option>
@@ -180,6 +144,8 @@
           </select>
           <span class="errmsg">Please select</span>
         </div>
+      </div>
+      <div style="margin-top:16px;">
         <div class="field">
           <label>PSTM <span class="req">*</span></label>
           <select id="pstm">
@@ -192,7 +158,7 @@
     </div>
   </div>
 
-  <!-- Card 2: Paper I -->
+  <!-- Card 2 -->
   <div class="card">
     <div class="card-header"><div class="num">2</div>Paper I Details</div>
     <div class="card-body">
@@ -214,7 +180,7 @@
     </div>
   </div>
 
-  <!-- Card 3: Paper II -->
+  <!-- Card 3 -->
   <div class="card">
     <div class="card-header">
       <div class="num">3</div>Paper II — Subject / Trade Details
@@ -224,6 +190,11 @@
       <div class="hint-box">
         <span class="icon">💡</span>
         <span>Select each subject/trade you appeared for. <strong>Eligible post names and post codes</strong> will appear automatically below each selection. Enter your <strong>Score</strong> and <strong>Rank</strong> for each.</span>
+      </div>
+
+      <div class="pref-note">
+        <span class="icon">🔢</span>
+        <span><strong>Preference Order:</strong> The order of subjects represents your preference. <strong>Drag and drop</strong> rows (using the ☰ handle) to reorder them by preference — first subject = 1st preference, second = 2nd preference, etc.</span>
       </div>
 
       <div class="subjects-list" id="subjectsList"></div>
@@ -249,291 +220,122 @@
     <h2>Submitted!</h2>
     <p>Thank you, <strong id="sName"></strong>.<br/>Your JTO 2026 result has been recorded.</p>
     <table class="success-table">
-      <thead><tr><th>#</th><th>Subject / Trade</th><th>Post(s)</th><th>Score</th><th>Rank</th></tr></thead>
+      <thead><tr><th>Pref</th><th>Subject / Trade</th><th>Post(s)</th><th>Score</th><th>Rank</th></tr></thead>
       <tbody id="sBody"></tbody>
     </table>
     <button class="btn-again" onclick="resetForm()">Submit Another Response</button>
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
-  // ── Complete subject → post mapping from official PDF ──
   const SUBJECT_POSTS = {
-    'Agriculture — 431': [
-      { code: '3101', name: 'Assistant Agricultural Officer' }
-    ],
-    'Chemical Engineering and Technology — 452': [
-      { code: '3679', name: 'Chemist, Grade-I' },
-      { code: '3651', name: 'Junior Burner' }
-    ],
-    'Civil Engineering — 443': [
-      { code: '3662', name: 'Junior Engineer' },
-      { code: '3115', name: 'Junior Draughting Officer' },
-      { code: '3547', name: 'Junior Draughting Officer' },
-      { code: '3549', name: 'Technical Assistant (Civil)' },
-      { code: 'Refer §3', name: 'Overseer / Junior Draughting Officer' }
-    ],
-    'Civil and Mining Engineering — 574': [
-      { code: '3674', name: 'Mines Surveyor' }
-    ],
-    'Electrical and Electronics Engineering — 446': [
-      { code: '3550', name: 'Technical Assistant (Electrical)' },
-      { code: '3591', name: 'Technical Assistant (Electrical)' }
-    ],
-    'Handloom, Textile Technology and Textile Manufacture — 445': [
-      { code: '1853', name: 'Junior Technical Assistant' }
-    ],
-    'Horticulture — 432': [
-      { code: '3104', name: 'Assistant Horticultural Officer' }
-    ],
-    'Mechanical Engineering — 441': [
-      { code: '3652', name: 'Junior Foreman (Factory)' }
-    ],
-    'Mining Engineering — 346': [
-      { code: '3654', name: 'Assistant Manager (Mines)' }
-    ],
-    'Physical Education — 354': [
-      { code: '1731', name: 'Hostel Superintendent cum Physical Training Officer' }
-    ],
-    'Rubber and Polymer Technology — 576': [
-      { code: '3258', name: 'Assistant Rubber Maker' }
-    ],
-    'Trade: Adv. CNC Machining Technician — 534': [
-      { code: '3619', name: 'Junior Training Officer (Advanced CNC Machining Technician)' }
-    ],
-    'Trade: Architectural Draughtsman — 531': [
-      { code: '3615', name: 'Junior Training Officer (Architectural Draughtsman)' }
-    ],
-    'Trade: Basic Designer and Virtual Verifier — 532': [
-      { code: '3617', name: 'Junior Training Officer (Basic Designer and Virtual Verifier)' }
-    ],
-    'Trade: Computer Hardware & Network Maintenance — 533': [
-      { code: '3618', name: 'Junior Training Officer (Computer Hardware and Network Maintenance)' }
-    ],
-    'Trade: Diesel Mechanic — 521': [
-      { code: '3656', name: 'Junior Tradesman (Diesel Mechanic)' }
-    ],
-    'Trade: Draughtsman Civil — 388': [
-      { code: '3620', name: 'Junior Training Officer (Draughtsman Civil)' }
-    ],
-    'Trade: Electrician — 438': [
-      { code: '3623', name: 'Junior Training Officer (Electrician)' },
-      { code: '3659', name: 'Junior Tradesman (Electrician)' }
-    ],
-    'Trade: Electronics Mechanic — 535': [
-      { code: '3622', name: 'Junior Training Officer (Electronics Mechanic)' }
-    ],
-    'Trade: Engg Drawing & Draughtsman (Mech & Civil) — 551': [
-      { code: '3621', name: 'Junior Training Officer (Engineering Drawing)' }
-    ],
-    'Trade: Fashion Design and Technology — 570': [
-      { code: '3624', name: 'Junior Training Officer (Fashion Design and Technology)' }
-    ],
-    'Trade: Fitter — 436': [
-      { code: '3625', name: 'Junior Training Officer (Fitter)' },
-      { code: '3657', name: 'Junior Tradesman (Fitter)' }
-    ],
-    'Trade: Food Production (General) — 536': [
-      { code: '3626', name: 'Junior Training Officer (Food Production)' }
-    ],
-    'Trade: ICT System Maintenance — 537': [
-      { code: '3627', name: 'Junior Training Officer (ICT System Maintenance)' }
-    ],
-    'Trade: In-Plant Logistics Assistant — 569': [
-      { code: '3628', name: 'Junior Training Officer (In-Plant Logistics Assistant)' }
-    ],
-    'Trade: Industrial Robotics & Digital Mfg Technician — 538': [
-      { code: '3629', name: 'Junior Training Officer (Industrial Robotics & Digital Manufacturing Technician)' }
-    ],
-    'Trade: Machinist — 539': [
-      { code: '3630', name: 'Junior Training Officer (Machinist)' }
-    ],
-    'Trade: Manufacturing Process Control and Automation — 543': [
-      { code: '3636', name: 'Junior Training Officer (Manufacturing Process Control and Automation)' }
-    ],
-    'Trade: Mechanic Auto Body Repair — 541': [
-      { code: '3632', name: 'Junior Training Officer (Mechanic Auto Body Repair)' }
-    ],
-    'Trade: Mechanic Electric Vehicle — 542': [
-      { code: '3634', name: 'Junior Training Officer (Mechanic Electric Vehicle)' }
-    ],
-    'Trade: Mechanic Motor Vehicle — 437': [
-      { code: '3635', name: 'Junior Training Officer (Mechanic Motor Vehicle)' },
-      { code: '3655', name: 'Junior Tradesman (Mechanic Motor Vehicle)' }
-    ],
-    'Trade: Mechanic Refrigeration & AC Technician — 435': [
-      { code: '3637', name: 'Junior Training Officer (Refrigeration & AC Technician)' },
-      { code: '3661', name: 'Junior Tradesman (AC Mechanic)' }
-    ],
-    'Trade: Mechanic Two and Three Wheeler — 553': [
-      { code: '3633', name: 'Junior Training Officer (Mechanic Two and Three Wheeler)' }
-    ],
-    'Trade: Operator Advanced Machine Tools — 544': [
-      { code: '3638', name: 'Junior Training Officer (Operator Advanced Machine Tool)' }
-    ],
-    'Trade: Pump Operator cum Mechanic — 545': [
-      { code: '3639', name: 'Junior Training Officer (Pump Operator cum Mechanic)' }
-    ],
-    'Trade: Sewing Technology — 546': [
-      { code: '3640', name: 'Junior Training Officer (Sewing Technology)' }
-    ],
-    'Trade: Sheet Metal — 520': [
-      { code: '3660', name: 'Junior Tradesman (Sheet Metal)' }
-    ],
-    'Trade: Smartphone Technician cum App Tester — 547': [
-      { code: '3641', name: 'Junior Training Officer (Smartphone Technician cum App Tester)' }
-    ],
-    'Trade: Solar Technician (Electrical) — 548': [
-      { code: '3642', name: 'Junior Training Officer (Solar Technician (Electrical))' }
-    ],
-    'Trade: Surveyor — 387': [
-      { code: '3378', name: 'Surveyor' },
-      { code: '3643', name: 'Junior Training Officer (Surveyor)' }
-    ],
-    'Trade: Technician Medical Electronics — 549': [
-      { code: '3644', name: 'Junior Training Officer (Technician Medical Electronics)' }
-    ],
-    'Trade: Textile Mechatronics — 568': [
-      { code: '3645', name: 'Junior Training Officer (Textile Mechatronics)' }
-    ],
-    'Trade: Turner, Tool and Die Maker — 552': [
-      { code: '3646', name: 'Junior Training Officer (Turner, Tool and Die Maker)' }
-    ],
-    'Trade: Welder (Gas and Electric) — 440': [
-      { code: '3647', name: 'Junior Training Officer (Welder)' },
-      { code: '3658', name: 'Junior Tradesman (Welder)' }
-    ],
-    'Trade: Wireman — 550': [
-      { code: '3648', name: 'Junior Training Officer (Wireman)' }
-    ],
-    'Trade: Workshop Calculation Science — 540': [
-      { code: '3631', name: 'Junior Training Officer (Workshop Calculation and Science)' }
-    ]
+    'Agriculture — 431': [{code:'3101',name:'Assistant Agricultural Officer'}],
+    'Chemical Engineering and Technology — 452': [{code:'3679',name:'Chemist, Grade-I'},{code:'3651',name:'Junior Burner'}],
+    'Civil Engineering — 443': [{code:'3662',name:'Junior Engineer'},{code:'3115',name:'Junior Draughting Officer'},{code:'3547',name:'Junior Draughting Officer'},{code:'3549',name:'Technical Assistant (Civil)'},{code:'Refer §3',name:'Overseer / Junior Draughting Officer'}],
+    'Civil and Mining Engineering — 574': [{code:'3674',name:'Mines Surveyor'}],
+    'Electrical and Electronics Engineering — 446': [{code:'3550',name:'Technical Assistant (Electrical)'},{code:'3591',name:'Technical Assistant (Electrical)'}],
+    'Handloom, Textile Technology and Textile Manufacture — 445': [{code:'1853',name:'Junior Technical Assistant'}],
+    'Horticulture — 432': [{code:'3104',name:'Assistant Horticultural Officer'}],
+    'Mechanical Engineering — 441': [{code:'3652',name:'Junior Foreman (Factory)'}],
+    'Mining Engineering — 346': [{code:'3654',name:'Assistant Manager (Mines)'}],
+    'Physical Education — 354': [{code:'1731',name:'Hostel Superintendent cum Physical Training Officer'}],
+    'Rubber and Polymer Technology — 576': [{code:'3258',name:'Assistant Rubber Maker'}],
+    'Trade: Adv. CNC Machining Technician — 534': [{code:'3619',name:'Junior Training Officer (Advanced CNC Machining Technician)'}],
+    'Trade: Architectural Draughtsman — 531': [{code:'3615',name:'Junior Training Officer (Architectural Draughtsman)'}],
+    'Trade: Basic Designer and Virtual Verifier — 532': [{code:'3617',name:'Junior Training Officer (Basic Designer and Virtual Verifier)'}],
+    'Trade: Computer Hardware & Network Maintenance — 533': [{code:'3618',name:'Junior Training Officer (Computer Hardware and Network Maintenance)'}],
+    'Trade: Diesel Mechanic — 521': [{code:'3656',name:'Junior Tradesman (Diesel Mechanic)'}],
+    'Trade: Draughtsman Civil — 388': [{code:'3620',name:'Junior Training Officer (Draughtsman Civil)'}],
+    'Trade: Electrician — 438': [{code:'3623',name:'Junior Training Officer (Electrician)'},{code:'3659',name:'Junior Tradesman (Electrician)'}],
+    'Trade: Electronics Mechanic — 535': [{code:'3622',name:'Junior Training Officer (Electronics Mechanic)'}],
+    'Trade: Engg Drawing & Draughtsman (Mech & Civil) — 551': [{code:'3621',name:'Junior Training Officer (Engineering Drawing)'}],
+    'Trade: Fashion Design and Technology — 570': [{code:'3624',name:'Junior Training Officer (Fashion Design and Technology)'}],
+    'Trade: Fitter — 436': [{code:'3625',name:'Junior Training Officer (Fitter)'},{code:'3657',name:'Junior Tradesman (Fitter)'}],
+    'Trade: Food Production (General) — 536': [{code:'3626',name:'Junior Training Officer (Food Production)'}],
+    'Trade: ICT System Maintenance — 537': [{code:'3627',name:'Junior Training Officer (ICT System Maintenance)'}],
+    'Trade: In-Plant Logistics Assistant — 569': [{code:'3628',name:'Junior Training Officer (In-Plant Logistics Assistant)'}],
+    'Trade: Industrial Robotics & Digital Mfg Technician — 538': [{code:'3629',name:'Junior Training Officer (Industrial Robotics & Digital Manufacturing Technician)'}],
+    'Trade: Machinist — 539': [{code:'3630',name:'Junior Training Officer (Machinist)'}],
+    'Trade: Manufacturing Process Control and Automation — 543': [{code:'3636',name:'Junior Training Officer (Manufacturing Process Control and Automation)'}],
+    'Trade: Mechanic Auto Body Repair — 541': [{code:'3632',name:'Junior Training Officer (Mechanic Auto Body Repair)'}],
+    'Trade: Mechanic Electric Vehicle — 542': [{code:'3634',name:'Junior Training Officer (Mechanic Electric Vehicle)'}],
+    'Trade: Mechanic Motor Vehicle — 437': [{code:'3635',name:'Junior Training Officer (Mechanic Motor Vehicle)'},{code:'3655',name:'Junior Tradesman (Mechanic Motor Vehicle)'}],
+    'Trade: Mechanic Refrigeration & AC Technician — 435': [{code:'3637',name:'Junior Training Officer (Refrigeration & AC Technician)'},{code:'3661',name:'Junior Tradesman (AC Mechanic)'}],
+    'Trade: Mechanic Two and Three Wheeler — 553': [{code:'3633',name:'Junior Training Officer (Mechanic Two and Three Wheeler)'}],
+    'Trade: Operator Advanced Machine Tools — 544': [{code:'3638',name:'Junior Training Officer (Operator Advanced Machine Tool)'}],
+    'Trade: Pump Operator cum Mechanic — 545': [{code:'3639',name:'Junior Training Officer (Pump Operator cum Mechanic)'}],
+    'Trade: Sewing Technology — 546': [{code:'3640',name:'Junior Training Officer (Sewing Technology)'}],
+    'Trade: Sheet Metal — 520': [{code:'3660',name:'Junior Tradesman (Sheet Metal)'}],
+    'Trade: Smartphone Technician cum App Tester — 547': [{code:'3641',name:'Junior Training Officer (Smartphone Technician cum App Tester)'}],
+    'Trade: Solar Technician (Electrical) — 548': [{code:'3642',name:'Junior Training Officer (Solar Technician (Electrical))'}],
+    'Trade: Surveyor — 387': [{code:'3378',name:'Surveyor'},{code:'3643',name:'Junior Training Officer (Surveyor)'}],
+    'Trade: Technician Medical Electronics — 549': [{code:'3644',name:'Junior Training Officer (Technician Medical Electronics)'}],
+    'Trade: Textile Mechatronics — 568': [{code:'3645',name:'Junior Training Officer (Textile Mechatronics)'}],
+    'Trade: Turner, Tool and Die Maker — 552': [{code:'3646',name:'Junior Training Officer (Turner, Tool and Die Maker)'}],
+    'Trade: Welder (Gas and Electric) — 440': [{code:'3647',name:'Junior Training Officer (Welder)'},{code:'3658',name:'Junior Tradesman (Welder)'}],
+    'Trade: Wireman — 550': [{code:'3648',name:'Junior Training Officer (Wireman)'}],
+    'Trade: Workshop Calculation Science — 540': [{code:'3631',name:'Junior Training Officer (Workshop Calculation and Science)'}]
   };
 
   const SUBJECTS = [
-    ['── Engineering / Diploma ──', [
-      'Agriculture — 431',
-      'Chemical Engineering and Technology — 452',
-      'Civil Engineering — 443',
-      'Civil and Mining Engineering — 574',
-      'Electrical and Electronics Engineering — 446',
-      'Handloom, Textile Technology and Textile Manufacture — 445',
-      'Horticulture — 432',
-      'Mechanical Engineering — 441',
-      'Mining Engineering — 346',
-      'Physical Education — 354',
-      'Rubber and Polymer Technology — 576',
-    ]],
-    ['── Trades / ITI ──', [
-      'Trade: Adv. CNC Machining Technician — 534',
-      'Trade: Architectural Draughtsman — 531',
-      'Trade: Basic Designer and Virtual Verifier — 532',
-      'Trade: Computer Hardware & Network Maintenance — 533',
-      'Trade: Diesel Mechanic — 521',
-      'Trade: Draughtsman Civil — 388',
-      'Trade: Electrician — 438',
-      'Trade: Electronics Mechanic — 535',
-      'Trade: Engg Drawing & Draughtsman (Mech & Civil) — 551',
-      'Trade: Fashion Design and Technology — 570',
-      'Trade: Fitter — 436',
-      'Trade: Food Production (General) — 536',
-      'Trade: ICT System Maintenance — 537',
-      'Trade: In-Plant Logistics Assistant — 569',
-      'Trade: Industrial Robotics & Digital Mfg Technician — 538',
-      'Trade: Machinist — 539',
-      'Trade: Manufacturing Process Control and Automation — 543',
-      'Trade: Mechanic Auto Body Repair — 541',
-      'Trade: Mechanic Electric Vehicle — 542',
-      'Trade: Mechanic Motor Vehicle — 437',
-      'Trade: Mechanic Refrigeration & AC Technician — 435',
-      'Trade: Mechanic Two and Three Wheeler — 553',
-      'Trade: Operator Advanced Machine Tools — 544',
-      'Trade: Pump Operator cum Mechanic — 545',
-      'Trade: Sewing Technology — 546',
-      'Trade: Sheet Metal — 520',
-      'Trade: Smartphone Technician cum App Tester — 547',
-      'Trade: Solar Technician (Electrical) — 548',
-      'Trade: Surveyor — 387',
-      'Trade: Technician Medical Electronics — 549',
-      'Trade: Textile Mechatronics — 568',
-      'Trade: Turner, Tool and Die Maker — 552',
-      'Trade: Welder (Gas and Electric) — 440',
-      'Trade: Wireman — 550',
-      'Trade: Workshop Calculation Science — 540',
-    ]]
+    ['── Engineering / Diploma ──',['Agriculture — 431','Chemical Engineering and Technology — 452','Civil Engineering — 443','Civil and Mining Engineering — 574','Electrical and Electronics Engineering — 446','Handloom, Textile Technology and Textile Manufacture — 445','Horticulture — 432','Mechanical Engineering — 441','Mining Engineering — 346','Physical Education — 354','Rubber and Polymer Technology — 576']],
+    ['── Trades / ITI ──',['Trade: Adv. CNC Machining Technician — 534','Trade: Architectural Draughtsman — 531','Trade: Basic Designer and Virtual Verifier — 532','Trade: Computer Hardware & Network Maintenance — 533','Trade: Diesel Mechanic — 521','Trade: Draughtsman Civil — 388','Trade: Electrician — 438','Trade: Electronics Mechanic — 535','Trade: Engg Drawing & Draughtsman (Mech & Civil) — 551','Trade: Fashion Design and Technology — 570','Trade: Fitter — 436','Trade: Food Production (General) — 536','Trade: ICT System Maintenance — 537','Trade: In-Plant Logistics Assistant — 569','Trade: Industrial Robotics & Digital Mfg Technician — 538','Trade: Machinist — 539','Trade: Manufacturing Process Control and Automation — 543','Trade: Mechanic Auto Body Repair — 541','Trade: Mechanic Electric Vehicle — 542','Trade: Mechanic Motor Vehicle — 437','Trade: Mechanic Refrigeration & AC Technician — 435','Trade: Mechanic Two and Three Wheeler — 553','Trade: Operator Advanced Machine Tools — 544','Trade: Pump Operator cum Mechanic — 545','Trade: Sewing Technology — 546','Trade: Sheet Metal — 520','Trade: Smartphone Technician cum App Tester — 547','Trade: Solar Technician (Electrical) — 548','Trade: Surveyor — 387','Trade: Technician Medical Electronics — 549','Trade: Textile Mechatronics — 568','Trade: Turner, Tool and Die Maker — 552','Trade: Welder (Gas and Electric) — 440','Trade: Wireman — 550','Trade: Workshop Calculation Science — 540']]
   ];
 
-  let uid = 0;
-  const activeRows = [];
+  let uid=0;
+  const activeRows=[];
+  let sortable=null;
 
-  function buildOptions() {
-    let h = '<option value="">— Select Subject / Trade —</option>';
-    SUBJECTS.forEach(([grp, opts]) => {
-      h += `<optgroup label="${grp}">`;
-      opts.forEach(o => { h += `<option>${o}</option>`; });
-      h += '</optgroup>';
-    });
+  function buildOptions(){
+    let h='<option value="">— Select Subject / Trade —</option>';
+    SUBJECTS.forEach(([g,o])=>{h+=`<optgroup label="${g}">`;o.forEach(i=>h+=`<option>${i}</option>`);h+='</optgroup>'});
     return h;
   }
 
-  function getSelectedSubjects(excludeId) {
-    const selected = new Set();
-    activeRows.forEach(id => {
-      if (id === excludeId) return;
-      const el = document.getElementById('s-' + id);
-      if (el && el.value) selected.add(el.value);
-    });
-    return selected;
+  function getSelectedSubjects(excludeId){
+    const s=new Set();
+    activeRows.forEach(id=>{if(id===excludeId)return;const e=document.getElementById('s-'+id);if(e&&e.value)s.add(e.value)});
+    return s;
   }
 
-  function syncDropdowns() {
-    activeRows.forEach(id => {
-      const sel = document.getElementById('s-' + id);
-      if (!sel) return;
-      const currentVal = sel.value;
-      const taken = getSelectedSubjects(id);
-      Array.from(sel.options).forEach(opt => {
-        if (!opt.value || opt.value === currentVal) { opt.disabled = false; opt.style.color = ''; }
-        else if (taken.has(opt.value)) { opt.disabled = true; opt.style.color = '#bbb'; }
-        else { opt.disabled = false; opt.style.color = ''; }
-      });
-    });
+  function syncDropdowns(){
+    activeRows.forEach(id=>{
+      const sel=document.getElementById('s-'+id);
+      if(!sel)return;
+      const cv=sel.value;
+      const taken=getSelectedSubjects(id);
+      Array.from(sel.options).forEach(o=>{
+        if(!o.value||o.value===cv){o.disabled=false;o.style.color=''}
+        else if(taken.has(o.value)){o.disabled=true;o.style.color='#bbb'}
+        else{o.disabled=false;o.style.color=''}
+      })
+    })
   }
 
-  function showPostInfo(id) {
-    const sel = document.getElementById('s-' + id);
-    const infoDiv = document.getElementById('pi-' + id);
-    const val = sel ? sel.value : '';
-
-    if (!val || !SUBJECT_POSTS[val]) {
-      infoDiv.classList.remove('show');
-      return;
-    }
-
-    const posts = SUBJECT_POSTS[val];
-    let html = '<div class="post-info-title">Eligible Posts for this Subject</div><div class="post-tags">';
-    posts.forEach(p => {
-      html += `<div class="post-tag">
-        <span class="post-code">Post Code: ${p.code}</span>
-        <span class="post-name">${p.name}</span>
-      </div>`;
-    });
-    html += '</div>';
-    infoDiv.innerHTML = html;
+  function showPostInfo(id){
+    const sel=document.getElementById('s-'+id);
+    const infoDiv=document.getElementById('pi-'+id);
+    const val=sel?sel.value:'';
+    if(!val||!SUBJECT_POSTS[val]){infoDiv.classList.remove('show');return}
+    const posts=SUBJECT_POSTS[val];
+    let h='<div class="post-info-title">Eligible Posts for this Subject</div><div class="post-tags">';
+    posts.forEach(p=>h+=`<div class="post-tag"><span class="post-code">Post Code: ${p.code}</span><span class="post-name">${p.name}</span></div>`);
+    h+='</div>';
+    infoDiv.innerHTML=h;
     infoDiv.classList.add('show');
     syncDropdowns();
   }
 
-  function addRow() {
+  function addRow(){
     uid++;
-    const id = uid;
+    const id=uid;
     activeRows.push(id);
-
-    const div = document.createElement('div');
-    div.className = 'subject-row';
-    div.id = 'row-' + id;
-    div.innerHTML = `
+    const div=document.createElement('div');
+    div.className='subject-row';
+    div.id='row-'+id;
+    div.setAttribute('data-id',id);
+    div.innerHTML=`
       <span class="row-badge" id="badge-${id}">Subject ${activeRows.length}</span>
       <div class="row-grid">
         <div class="field">
@@ -555,101 +357,112 @@
       </div>
       <div class="post-info" id="pi-${id}"></div>
     `;
-
     document.getElementById('subjectsList').appendChild(div);
-    document.getElementById('subjectErr').style.display = 'none';
+    document.getElementById('subjectErr').style.display='none';
     syncDropdowns();
     updateBadge();
     updateProgress();
-    setTimeout(() => div.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
+    initSortable();
+    setTimeout(()=>div.scrollIntoView({behavior:'smooth',block:'nearest'}),80);
   }
 
-  function removeRow(id) {
-    const el = document.getElementById('row-' + id);
-    if (el) el.remove();
-    const idx = activeRows.indexOf(id);
-    if (idx > -1) activeRows.splice(idx, 1);
-    renumber(); syncDropdowns(); updateBadge(); updateProgress();
+  function removeRow(id){
+    const el=document.getElementById('row-'+id);
+    if(el)el.remove();
+    const idx=activeRows.indexOf(id);
+    if(idx>-1)activeRows.splice(idx,1);
+    renumber();
+    syncDropdowns();
+    updateBadge();
+    updateProgress();
   }
 
-  function renumber() {
-    activeRows.forEach((id, i) => {
-      const b = document.getElementById('badge-' + id);
-      if (b) b.textContent = 'Subject ' + (i + 1);
+  function renumber(){
+    const list=document.getElementById('subjectsList');
+    const rows=list.querySelectorAll('.subject-row');
+    activeRows.length=0;
+    rows.forEach((row,i)=>{
+      const id=parseInt(row.getAttribute('data-id'));
+      activeRows.push(id);
+      const b=document.getElementById('badge-'+id);
+      if(b)b.textContent='Subject '+(i+1);
+    })
+  }
+
+  function initSortable(){
+    if(sortable)sortable.destroy();
+    sortable=Sortable.create(document.getElementById('subjectsList'),{
+      animation:150,
+      handle:'.row-badge',
+      draggable:'.subject-row',
+      onEnd:function(){renumber()}
     });
   }
 
-  function updateBadge() {
-    const n = activeRows.length;
-    const b = document.getElementById('countBadge');
-    b.textContent = n + (n === 1 ? ' subject' : ' subjects');
-    b.classList.toggle('show', n > 0);
+  function updateBadge(){
+    const n=activeRows.length;
+    const b=document.getElementById('countBadge');
+    b.textContent=n+(n===1?' subject':' subjects');
+    b.classList.toggle('show',n>0);
   }
 
-  const trackIds = ['name','regno','category','gender','pstm','tamil','p1marks'];
-  trackIds.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) { el.addEventListener('input', updateProgress); el.addEventListener('change', updateProgress); }
+  const trackIds=['name','regno','category','gender','pstm','tamil','p1marks'];
+  trackIds.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.addEventListener('input',updateProgress);el.addEventListener('change',updateProgress)}
   });
 
-  function updateProgress() {
-    const filled = trackIds.filter(id => { const el = document.getElementById(id); return el && el.value.trim() !== ''; }).length;
-    const hasSubj = activeRows.length > 0 ? 1 : 0;
-    const pct = Math.round(((filled + hasSubj) / (trackIds.length + 1)) * 100);
-    document.getElementById('progressFill').style.width = pct + '%';
+  function updateProgress(){
+    const filled=trackIds.filter(id=>{const el=document.getElementById(id);return el&&el.value.trim()!==''}).length;
+    const hasSubj=activeRows.length>0?1:0;
+    const pct=Math.round(((filled+hasSubj)/(trackIds.length+1))*100);
+    document.getElementById('progressFill').style.width=pct+'%';
   }
 
-  function chk(id, fn) {
-    const el = document.getElementById(id);
-    if (!el) return true;
-    const ok = fn(el.value);
-    el.classList.toggle('err', !ok);
+  function chk(id,fn){
+    const el=document.getElementById(id);
+    if(!el)return true;
+    const ok=fn(el.value);
+    el.classList.toggle('err',!ok);
     return ok;
   }
 
-  function submitForm() {
-    let ok = true;
-    ok &= chk('name',     v => v.trim().length > 1);
-    ok &= chk('regno',    v => v.trim().length > 0);
-    ok &= chk('category', v => v !== '');
-    ok &= chk('gender',   v => v !== '');
-    ok &= chk('pstm',     v => v !== '');
-    ok &= chk('tamil',    v => v !== '');
-    ok &= chk('p1marks',  v => v !== '' && +v >= 0 && +v <= 150);
-
-    if (activeRows.length === 0) {
-      document.getElementById('subjectErr').style.display = 'block';
-      ok = false;
-    } else {
-      activeRows.forEach(id => {
-        ok &= chk('s-'  + id, v => v !== '');
-        ok &= chk('sc-' + id, v => v !== '' && +v >= 0 && +v <= 300);
-        ok &= chk('r-'  + id, v => v !== '' && +v >= 1);
-      });
+  function submitForm(){
+    let ok=true;
+    ok&=chk('name',v=>v.trim().length>1);
+    ok&=chk('regno',v=>v.trim().length>0);
+    ok&=chk('category',v=>v!=='');
+    ok&=chk('gender',v=>v!=='');
+    ok&=chk('pstm',v=>v!=='');
+    ok&=chk('tamil',v=>v!=='');
+    ok&=chk('p1marks',v=>v!==''&&+v>=0&&+v<=150);
+    if(activeRows.length===0){document.getElementById('subjectErr').style.display='block';ok=false}
+    else{
+      activeRows.forEach(id=>{
+        ok&=chk('s-'+id,v=>v!=='');
+        ok&=chk('sc-'+id,v=>v!==''&&+v>=0&&+v<=300);
+        ok&=chk('r-'+id,v=>v!==''&&+v>=1);
+      })
     }
+    if(!ok){window.scrollTo({top:0,behavior:'smooth'});return}
 
-    if (!ok) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
-
-    let tbody = '';
-    activeRows.forEach((id, i) => {
-      const subj  = document.getElementById('s-' + id).value;
-      const score = document.getElementById('sc-' + id).value;
-      const rank  = document.getElementById('r-' + id).value;
-      const posts = SUBJECT_POSTS[subj] || [];
-      const postStr = posts.map(p => `${p.code} – ${p.name}`).join('<br>');
-      tbody += `<tr>
-        <td>${i + 1}</td>
-        <td>${subj}</td>
-        <td>${postStr}</td>
-        <td>${score}</td>
-        <td>${rank}</td>
-      </tr>`;
+    let tbody='';
+    activeRows.forEach((id,i)=>{
+      const subj=document.getElementById('s-'+id).value;
+      const score=document.getElementById('sc-'+id).value;
+      const rank=document.getElementById('r-'+id).value;
+      const posts=SUBJECT_POSTS[subj]||[];
+      const postStr=posts.map(p=>`${p.code} – ${p.name}`).join('<br>');
+      tbody+=`<tr><td>${i+1}</td><td>${subj}</td><td>${postStr}</td><td>${score}</td><td>${rank}</td></tr>`;
     });
 
-    document.getElementById('sName').textContent = document.getElementById('name').value;
-    document.getElementById('sBody').innerHTML = tbody;
-    fetch("https://script.google.com/macros/s/AKfycbzC1Mc8nyxz3-N2OpqgJkWgt_jEnSt9H9IV-StMgUtuOzc3cnQOYTyAz9PpBU4g9hCy3w/exec", {
+    document.getElementById('sName').textContent=document.getElementById('name').value;
+    document.getElementById('sBody').innerHTML=tbody;
+fetch("PASTE_WEB_APP_URL_HERE", {
   method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
   body: JSON.stringify({
     name: document.getElementById("name").value,
     regno: document.getElementById("regno").value,
@@ -669,19 +482,22 @@
       };
     })
   })
-});
+})
+.then(res => res.json())
+.then(data => console.log("Success:", data))
+.catch(error => console.error("Error:", error));
     document.getElementById('overlay').classList.add('show');
   }
 
-  function resetForm() {
+  function resetForm(){
     document.getElementById('overlay').classList.remove('show');
-    document.querySelectorAll('input,select').forEach(el => { el.value = ''; el.classList.remove('err'); });
-    document.getElementById('subjectsList').innerHTML = '';
-    activeRows.length = 0; uid = 0;
-    syncDropdowns(); updateBadge();
-    document.getElementById('progressFill').style.width = '0%';
-    document.getElementById('subjectErr').style.display = 'none';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.querySelectorAll('input,select').forEach(el=>{el.value='';el.classList.remove('err')});
+    document.getElementById('subjectsList').innerHTML='';
+    activeRows.length=0;uid=0;
+    syncDropdowns();updateBadge();
+    document.getElementById('progressFill').style.width='0%';
+    document.getElementById('subjectErr').style.display='none';
+    window.scrollTo({top:0,behavior:'smooth'});
     addRow();
   }
 
