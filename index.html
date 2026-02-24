@@ -472,45 +472,36 @@
 
     document.getElementById('sName').textContent=document.getElementById('name').value;
     document.getElementById('sBody').innerHTML=tbody;
-fetch("https://script.google.com/macros/s/AKfycbzTXladbKhZyvWhH3alOFeiPYtpEP5gMEYkZmwpVbBheRgcsWBEj9W-Ef3e3xLQ-G07pg/exec", {
+fetch("https://script.google.com/macros/s/AKfycbzHqFzw73Wiq2NBj1U_lB2bzRo-eKCpt8DuykUJJLi8Mq6DnXo2efNc8jB4vJR3bgNitg/exec", {
   method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    name: document.getElementById("name").value,
-    regno: document.getElementById("regno").value,
-    phone: document.getElementById("phone").value,
-    category: document.getElementById("category").value,
-    gender: document.getElementById("gender").value,
-    pstm: document.getElementById("pstm").value,
-    tamil: document.getElementById("tamil").value,
-    p1marks: document.getElementById("p1marks").value,
+  body: new URLSearchParams({
+    data: JSON.stringify({
+      name: document.getElementById("name").value,
+      regno: document.getElementById("regno").value,
+      phone: document.getElementById("phone").value,
+      category: document.getElementById("category").value,
+      gender: document.getElementById("gender").value,
+      pstm: document.getElementById("pstm").value,
+      tamil: document.getElementById("tamil").value,
+      p1marks: document.getElementById("p1marks").value,
 
-    subjects: activeRows.map((id, index) => {
+      subjects: activeRows.map((id, index) => {
+        const subj = document.getElementById('s-' + id).value;
+        const score = document.getElementById('sc-' + id).value;
+        const rank = document.getElementById('r-' + id).value;
+        const posts = SUBJECT_POSTS[subj] || [];
 
-      const subj = document.getElementById('s-' + id).value;
-      const score = document.getElementById('sc-' + id).value;
-      const rank = document.getElementById('r-' + id).value;
-      const posts = SUBJECT_POSTS[subj] || [];
-
-      return {
-        preferenceOrder: index + 1,
-        preferenceID: document.getElementById("regno").value + "-" + (index + 1),
-        subject: subj,
-        posts: posts.map(p => p.code + " - " + p.name).join(", "),
-        score: score,
-        rank: rank
-      };
+        return {
+          preferenceOrder: index + 1,
+          preferenceID: document.getElementById("regno").value + "-" + (index + 1),
+          subject: subj,
+          posts: posts.map(p => p.code + " - " + p.name).join(", "),
+          score: score,
+          rank: rank
+        };
+      })
     })
   })
-})
-.then(response => response.json())
-.then(data => {
-  console.log("Saved:", data);
-})
-.catch(error => {
-  console.error("Error:", error);
 });
     document.getElementById('overlay').classList.add('show');
   }
